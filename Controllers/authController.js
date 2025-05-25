@@ -25,9 +25,8 @@ export const register = async (req, res) => {
 
         res.cookie('token', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
-            maxAge: 7 * 24 * 60 * 60 * 1000
+            secure: true, // Required for SameSite=None
+            sameSite: 'None',
         });
 
         const mailOptions = {
@@ -87,7 +86,7 @@ export const login = async (req, res) => {
         return res.status(200).json({ success: true, message: "Login successful" });
 
     } catch (error) {
-       
+
         return res.status(500).json({ success: false, message: "Server error" });
     }
 };
@@ -146,7 +145,7 @@ export const sendVerifyOtp = async (req, res) => {
 
 export const verifyEmail = async (req, res) => {
     const { userId, otp } = req.body;
-   
+
     if (!userId || !otp) {
         return res.status(500).json({ success: false, message: 'missing details' });
     }
@@ -251,7 +250,7 @@ export const sentresetOtp = async (req, res) => {
 export const resetPassword = async (req, res) => {
     const { email, newpass, otp } = req.body;
 
-console.log(newpass);
+    console.log(newpass);
     if (!email || !newpass || !otp) {
         return res.status(400).json({ success: false, message: "Please provide email, new password, and OTP" });
     }
